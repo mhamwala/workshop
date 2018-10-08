@@ -1,8 +1,8 @@
 # Building a Cloud Ready Express.js Application
 
-This workshop shows you how to take a Node.js application, and make it "cloud ready": adding support for Cloud Native Computing Foundation (CNCF) technologies using the package and templates provided by the CloudNativeJS project.
+This workshop shows you how to take a Node.js application and make it "cloud ready": adding support for Cloud Native Computing Foundation (CNCF) technologies using the package and templates provided by the CloudNativeJS project.
 
-In this self-paced tutorial you will:
+In this self-paced tutorial, you will:
 
 * Create an Express.js application
 * Add Health Checks and Metrics to your application
@@ -112,13 +112,13 @@ Your application should now be visible at the following URL: [http://localhost:3
 
 ## 2. Add Health Checks to your Application
 
-Kubernetes, and a number of other cloud deployment technolgies, provide "Health Checking" as a system that allows the cloud deployment technology to monitor the deployed application and to take action should the application fail or report it self as "un-healthy".
+Kubernetes, and a number of other cloud deployment technologies, provide "Health Checking" as a system that allows the cloud deployment technology to monitor the deployed application and to take action should the application fail or report itself as "un-healthy".
 
-The simplest form of Health Check is process level health checking, where Kubernetes checks to see if the application process still exists and restarts the container (and therefore the application process) if it is not. This provides a basic restart capability, but does not handle scenarios where there application exists but is un-responsive, or where it would be desirable to restart the application for other reasons (such as low memory availability due to a memory leak).
+The simplest form of Health Check is process level health checking, where Kubernetes checks to see if the application process still exists and restarts the container (and therefore the application process) if it is not. This provides a basic restart capability but does not handle scenarios where the application exists but is un-responsive, or where it would be desirable to restart the application for other reasons (such as low memory availability due to a memory leak).
 
-The next level of Health Check is HTTP based, where the application exposes a "livenessProbe" URL endpoint that Kubernetes can make requests of in order to determine whether the application is running and responsive. Additionally the request can be used to drive self-checking capabilities in the application.
+The next level of Health Check is HTTP based, where the application exposes a "livenessProbe" URL endpoint that Kubernetes can make requests of in order to determine whether the application is running and responsive. Additionally, the request can be used to drive self-checking capabilities in the application.
 
-The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint, and provides a Promise based API for adding self-checking capabilities.
+The `@cloudnative/health-connect` package provides a Connect Middleware that makes it easy to add a default health check endpoint and provides a Promise based API for adding self-checking capabilities.
 
 Add a Health Check endpoint to your Express.js application using the following steps:
 
@@ -154,17 +154,17 @@ Check that your livenessProbe Health Check endpoint is running:
 
    [http://localhost:3000/health](http://localhost:3000/health)
 
-For information on how to register health/liveness checks, and additonal support for startup, readiness and shutdown checks, see the [Cloud Health documentation](https://github.com/CloudNativeJS/cloud-health/blob/master/README.md).
+For information on how to register health/liveness checks, and additional support for start-up, readiness and shutdown checks, see the [Cloud Health documentation](https://github.com/CloudNativeJS/cloud-health/blob/master/README.md).
 
 
 ## 3. Add Metrics to your Application
 
 
-For any application deployed to a cloud, it is important that the application is "observable": that you have sufficient information about an application and its dependencies such that it is possible to discover, understand and diagnose the state of the application. One important aspect of application observability is metrics based monitoring data for the application. 
+For any application deployed to a cloud, it is important that the application is "observable": that you have sufficient information about an application and its dependencies such that it is possible to discover, understand and diagnose the state of the application. One important aspect of application observability is metrics-based monitoring data for the application. 
 
-The CNCF recommended metrics system is [Prometheus](http://prometheus.io), which works by collecting metrics data by making requests of a URL endpoint provided by the application. Prometheus is widlely supported inside Kubernetes, meaning that Prometheus also collects data from Kuberentes itself, and application data provided to Prometheus can also be used to automatically scale your application. 
+The CNCF recommended metrics system is [Prometheus](http://prometheus.io), which works by collecting metrics data by making requests of a URL endpoint provided by the application. Prometheus is widely supported inside Kubernetes, meaning that Prometheus also collects data from Kubernetes itself, and application data provided to Prometheus can also be used to automatically scale your application. 
 
-The `appmetrics-prometheus` package provides a easy to use library that auto-instruments your application to collect metrics and exposes them on a `/metrics` endpoint for consumption by Prometheus.
+The `appmetrics-prometheus` package provides an easy to use library that auto-instruments your application to collect metrics and exposes them on a `/metrics` endpoint for consumption by Prometheus.
 
 Add a `/metrics` Prometheus endpoint to your Express.js application using the following steps:
 
@@ -197,7 +197,7 @@ For information on how to configure the appmetrics-prometheus library see the [a
 
 You can install a local Prometheus server to graph and visualize the data, and additionally to set up alerts. For this workshop you'll use Prometheus once you've deployed your application to Kubernetes.
 
-## 3. Building your Application with Docker
+## 4. Building your Application with Docker
 
 Before you can deploy your application to Kubernetes, you first need to build your application into a Docker container and produce a Docker image. This packages your application along with all of its dependencies in a ready to run format.
 
@@ -207,13 +207,19 @@ For this workshop, you'll use the `Dockerfile-run` template, which builds a prod
 
 Build a production Docker image for your Express.js application using the following steps:
 
-1. Copy the Dockerfile-run template into the root of your project
+1. Copy the `Dockerfile-run` template into the root of your project:
 
    ```sh
    wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/Dockerfile-run
    ```
    
-2. Building the Docker run image for your application
+1. Copy the `.dockerignore` file into the root of your project:
+
+   ```sh
+   wget https://raw.githubusercontent.com/CloudNativeJS/docker/master/.dockerignore
+   ```
+   
+2. Build the Docker run image for your application:
 
    ```sh
    docker build -t nodeserver-run:1.0.0 -f Dockerfile-run .
@@ -235,13 +241,13 @@ Go ahead and visit your applications endpoints to check that it is running succe
 
 For information on Docker usage, how to develop your application directly in a Docker container, and how to debug your application in a Docker container, see the [Docker documentation](https://github.com/CloudNativeJS/docker).
 
-## 4. Packaging your Application with Helm
+## 5. Packaging your Application with Helm
 
 In order to deploy your Docker image to Kubernetes you need to supply Kubernetes with configuration on how you need your application to be run, including which Docker image to use, how many replicas (instances) to deploy and much memory and CPU to provide to each.
 
 Helm charts provide an easy way to package your application with this information. 
 
-CloudNativeJS provides a "[Helm](https://github.com/CloudNativeJS/helm)" project that provides a template best-practice Helm chart template that can be used to package your application for Kuberentes.
+CloudNativeJS provides a "[Helm](https://github.com/CloudNativeJS/helm)" project that provides a template best-practice Helm chart template that can be used to package your application for Kubernetes.
 
 Add a Helm chart for your Express.js application using the following steps:
 
@@ -276,7 +282,7 @@ Go ahead and modify the `chart/nodeserver/values.yaml` file to use your image, a
 The `repository` field gives the name of the Docker image to use. The `pullPolicy` change tells Kuberentes to use a local Docker image if there is one available rather than always pulling the Docker image from a remote repository. Finally, the `replicaCount` states how many instances to deploy.
  
 
-## 5. Deploying your Application to Kubernetes
+## 6. Deploying your Application to Kubernetes
 
 Now that you have built a Helm chart for your application, the process for deploying your application has been greatly simplified.
 
@@ -294,7 +300,7 @@ Deploy your Express.js application into Kubernetes using the following steps:
    kubectl get pods
    ```
    
-Now everything is up and running in Kubernetes. Its not possible to navigate to localhost:3000 as usual because your cluster isn't part of the localhost network, and becuase there are several instances to choose from.
+Now everything is up and running in Kubernetes. Its not possible to navigate to localhost:3000 as usual because your cluster isn't part of the localhost network, and because there are several instances to choose from.
 
 You can forward one of the instances ports to your laptop using the following steps:
 
@@ -311,7 +317,7 @@ You can forward one of the instances ports to your laptop using the following st
 
 You can now access that pod's endpoints from your browser.
 
-## 6. Monitoring your Application with Prometheus
+## 7. Monitoring your Application with Prometheus
 
 Installing Prometheus into Kubernetes can be done using its provided Helm chart:
 
@@ -338,7 +344,7 @@ To build your first graph, type `os_cpu_used_ratio` into the **Expression** box 
 ![prometheus-graph](./resources/prometheus-graph.png)
 
 
-Whilst Prometheus provdes the ability to build simple graphs and alerts, Grafana is commonly used to build more sophisticated dashboards.
+Whilst Prometheus provides the ability to build simple graphs and alerts, Grafana is commonly used to build more sophisticated dashboards.
 
 ### Installing Grafana into Kubernetes
 
@@ -392,7 +398,7 @@ Set the **Prometheus** field to `Prometheus` and click **Import**.
 
 ![grafana-dashboard-import](./resources/grafana-dashboard-import.png)
 
-This will then open the dashboard, which will automatical start populating with data about your Kubernetes cluster.
+This will then open the dashboard, which will automatically start populating with data about your Kubernetes cluster.
 
 ![grafana-kube-dash](./resources/grafana-kube-dash.png)
 
@@ -418,6 +424,7 @@ You now have integrated monitoring for both your Kubernetes cluster and your dep
 Here are some ideas you could explore to further your learning.
 
 * Add a Singlestat that shows how many instances of you Express.js application are currently running
-* Add a Singlestat that shows how many requests your Express.js app has responded to 
+* Add a Singlestat that shows how many requests your Express.js app has responded to
+
 
 
